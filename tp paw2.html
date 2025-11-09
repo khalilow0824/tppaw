@@ -14,7 +14,7 @@
     color: #333;
   }
 
-  /* 🧭 Bannière de présentation */
+  /*  Bannière de présentation */
   #presentation {
     text-align: center;
     padding: 60px 20px 40px 20px;
@@ -134,7 +134,7 @@
     margin-top: 20px;
   }
 
-  /* 🎨 Boutons modernisés */
+  /*  Boutons modernisés */
   #buttonsZone {
     display: flex;
     gap: 15px;
@@ -180,7 +180,7 @@
 <body>
 
 <section id="presentation">
-  <h1>🎓 Gestion de la Présence et de la Participation</h1>
+  <h1> Gestion de la Présence et de la Participation</h1>
   <p>Suivi intelligent des étudiants, statistiques et visualisations interactives</p>
   <hr>
 </section>
@@ -278,7 +278,7 @@
 <script>
 const table = document.getElementById("attendanceTable");
 
-// 🔹 Met à jour chaque ligne du tableau
+//  Met à jour chaque ligne du tableau
 function updateRow(row) {
   const cells = row.querySelectorAll("td");
   let absences = 0, participations = 0;
@@ -309,7 +309,7 @@ function updateRow(row) {
   cells[16].textContent = msg;
 }
 
-// ✅ Cases cliquables
+//  Cases cliquables
 table.querySelectorAll("td.clickable").forEach(cell => {
   cell.addEventListener("click", () => {
     cell.textContent = cell.textContent === "✓" ? "" : "✓";
@@ -318,7 +318,7 @@ table.querySelectorAll("td.clickable").forEach(cell => {
 });
 table.querySelectorAll("tbody tr").forEach(row => updateRow(row));
 
-// ✅ Formulaire
+//  Formulaire
 document.getElementById("studentForm").addEventListener("submit", function(e) {
   e.preventDefault();
   const id = studentId.value.trim(), last = lastName.value.trim(), first = firstName.value.trim(), email = document.getElementById("email").value.trim();
@@ -341,11 +341,11 @@ document.getElementById("studentForm").addEventListener("submit", function(e) {
     updateRow(c.parentElement);
   }));
   updateRow(newRow);
-  alert("✅ Student added successfully!");
+  alert(" Student added successfully!");
   this.reset();
 });
 
-// ✅ Rapport (Exercice 4)
+//  Rapport (Exercice 4)
 let reportChart = null;
 
 document.getElementById("showReport").addEventListener("click", () => {
@@ -363,7 +363,7 @@ document.getElementById("showReport").addEventListener("click", () => {
     }
   });
 
-  // ✅ afficher la section du rapport
+  // afficher la section du rapport
   document.getElementById("reportSection").style.display = "block";
   document.getElementById("reportText").innerHTML = `
     <strong>Total Students:</strong> ${totalStudents}<br>
@@ -371,7 +371,7 @@ document.getElementById("showReport").addEventListener("click", () => {
     <strong>Total Participations:</strong> ${totalParticipants}
   `;
 
-  // ✅ création du graphique
+  //  création du graphique
   const ctx = document.getElementById("reportChart").getContext("2d");
   if (reportChart) reportChart.destroy();
 
@@ -397,7 +397,7 @@ document.getElementById("showReport").addEventListener("click", () => {
   });
 });
 
-// ✅ jQuery – Exo 5 & 6
+//  jQuery – Exo 5 & 6
 $(document).ready(function() {
 
   // survol — highlight léger
@@ -475,3 +475,4 @@ $(document).ready(function() {
 
 </body>
 </html>
+
