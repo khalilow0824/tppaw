@@ -231,7 +231,6 @@
   </tbody>
 </table>
 
-<!-- 🧩 Nouveau bouton pour le rapport -->
 <button id="showReport">Show Report</button>
 
 <!-- Section pour afficher le rapport -->
@@ -345,7 +344,6 @@ document.getElementById("studentForm").addEventListener("submit", function(e) {
   }
 });
 
-// 🧩 SHOW REPORT (Exercice 4)
 let reportChart = null; 
 
 document.getElementById("showReport").addEventListener("click", () => {
@@ -390,7 +388,6 @@ document.getElementById("showReport").addEventListener("click", () => {
   });
 });
 
-// 🧩 Exercice 5 – jQuery hover + click
 $(document).ready(function() {
   $("#attendanceTable tbody tr").hover(
     function() { $(this).addClass("highlight"); },
@@ -404,7 +401,6 @@ $(document).ready(function() {
     const partTEXT = $(this).find("td:eq(15)").text();
     alert(`Student: ${first} ${last}\n${absText }\n${partTEXT}`);
 
-     // 🧩 Exercice 6 – Highlight Excellent Students
   $("#highlightExcellent").on("click", function() {
     $("#attendanceTable tbody tr").each(function() {
       const absText = $(this).find("td:eq(14)").text();
@@ -426,3 +422,4 @@ $(document).ready(function() {
 
 </body>
 </html>
+
