@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Add Student Form + Report + jQuery</title>
+<title>Gestion de la Présence et de la Participation</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
@@ -14,15 +14,40 @@
     color: #333;
   }
 
-  header {
-    background: linear-gradient(90deg, #007bff, #00b4d8);
-    color: white;
+  /* 🧭 Bannière de présentation */
+  #presentation {
     text-align: center;
-    padding: 25px;
-    font-size: 24px;
-    font-weight: 600;
+    padding: 60px 20px 40px 20px;
+    background: linear-gradient(135deg, #007bff 0%, #00b4d8 100%);
+    color: white;
+    border-bottom-left-radius: 50% 10%;
+    border-bottom-right-radius: 50% 10%;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  #presentation h1 {
+    font-size: 42px;
+    margin-bottom: 10px;
     letter-spacing: 1px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    animation: fadeIn 1.2s ease-in-out;
+  }
+
+  #presentation p {
+    font-size: 18px;
+    opacity: 0.9;
+    margin-bottom: 20px;
+  }
+
+  #presentation hr {
+    width: 80px;
+    border: 2px solid white;
+    border-radius: 3px;
+    margin: 0 auto;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .container {
@@ -70,21 +95,6 @@
     font-size: 13px;
   }
 
-  button {
-    margin-top: 15px;
-    padding: 10px 20px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.2s;
-    font-weight: 500;
-  }
-  button:hover {
-    background: #0056b3;
-  }
-
   #attendanceTable {
     border-collapse: collapse;
     width: 100%;
@@ -124,14 +134,39 @@
     margin-top: 20px;
   }
 
-  /* Boutons du bas */
+  /* 🎨 Boutons modernisés */
   #buttonsZone {
     display: flex;
-    gap: 10px;
+    gap: 15px;
     flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 25px;
   }
 
-  /* Animation Exercice 6 */
+  .btn {
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    color: white;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  }
+
+  .btn-blue { background: linear-gradient(45deg, #007bff, #00b4d8); }
+  .btn-green { background: linear-gradient(45deg, #28a745, #5cd45f); }
+  .btn-orange { background: linear-gradient(45deg, #ff9800, #ffc107); }
+
+  tr.highlight { background-color: #d7ebff !important; }
+
   @keyframes blink {
     0% { background-color: #a3f0a2; }
     50% { background-color: #7ee27d; }
@@ -140,120 +175,117 @@
   .excellent {
     animation: blink 1s infinite;
   }
-
-  tr.highlight { background-color: #d7ebff !important; }
-
 </style>
 </head>
 <body>
-  <section id="presentation">
+
+<section id="presentation">
   <h1>🎓 Gestion de la Présence et de la Participation</h1>
   <p>Suivi intelligent des étudiants, statistiques et visualisations interactives</p>
   <hr>
 </section>
 
-<h2>Add Student</h2>
+<div class="container">
 
-<form id="studentForm" novalidate>
-  <label>Student ID:
-    <input type="text" id="studentId">
-    <span id="idError"></span>
-  </label>
-  <label>Last Name:
-    <input type="text" id="lastName">
-    <span id="lastError"></span>
-  </label>
-  <label>First Name:
-    <input type="text" id="firstName">
-    <span id="firstError"></span>
-  </label>
-  <label>Email:
-    <input type="text" id="email">
-    <span id="emailError"></span>
-  </label>
-  <button type="submit">Submit</button>
-</form>
+  <div class="card">
+    <h2>Add Student</h2>
+    <form id="studentForm" novalidate>
+      <label>Student ID:
+        <input type="text" id="studentId"><span id="idError"></span>
+      </label>
+      <label>Last Name:
+        <input type="text" id="lastName"><span id="lastError"></span>
+      </label>
+      <label>First Name:
+        <input type="text" id="firstName"><span id="firstError"></span>
+      </label>
+      <label>Email:
+        <input type="text" id="email"><span id="emailError"></span>
+      </label>
+      <button type="submit">Add Student</button>
+    </form>
+  </div>
 
-<h2>Interactive Attendance Table</h2>
+  <div class="card">
+    <h2>Interactive Attendance Table</h2>
 
-<table id="attendanceTable">
-  <thead>
-    <tr>
-      <th>Last Name</th>
-      <th>First Name</th>
-      <th colspan="12">Sessions</th>
-      <th>Absences</th>
-      <th>Participations</th>
-      <th>Message</th>
-    </tr>
-    <tr>
-      <th></th><th></th>
-      <th>S1 (P)</th><th>S1 (Par)</th>
-      <th>S2 (P)</th><th>S2 (Par)</th>
-      <th>S3 (P)</th><th>S3 (Par)</th>
-      <th>S4 (P)</th><th>S4 (Par)</th>
-      <th>S5 (P)</th><th>S5 (Par)</th>
-      <th>S6 (P)</th><th>S6 (Par)</th>
-      <th></th><th></th><th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Sekhri</td><td>Samy</td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td></td><td></td><td></td>
-    </tr>
-    <tr>
-      <td>Kherfi</td><td>Khalil</td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td></td><td></td><td></td>
-      <tr>
-      <td>Larbaoui</td><td>Lina</td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td></td><td></td><td></td>
-    </tr>
-    </tr>
-  </tbody>
-</table>
+    <table id="attendanceTable">
+      <thead>
+        <tr>
+          <th>Last Name</th><th>First Name</th>
+          <th colspan="12">Sessions</th>
+          <th>Absences</th><th>Participations</th><th>Message</th>
+        </tr>
+        <tr>
+          <th></th><th></th>
+          <th>S1 (P)</th><th>S1 (Par)</th>
+          <th>S2 (P)</th><th>S2 (Par)</th>
+          <th>S3 (P)</th><th>S3 (Par)</th>
+          <th>S4 (P)</th><th>S4 (Par)</th>
+          <th>S5 (P)</th><th>S5 (Par)</th>
+          <th>S6 (P)</th><th>S6 (Par)</th>
+          <th></th><th></th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Sekhri</td><td>Samy</td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <td>Kherfi</td><td>Khalil</td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <td>Larbaoui</td><td>Lina</td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td class="clickable"></td><td class="clickable"></td>
+          <td></td><td></td><td></td>
+        </tr>
+      </tbody>
+    </table>
 
-<button id="showReport">Show Report</button>
+    <div id="buttonsZone">
+      <button class="btn btn-blue" id="showReport">📊 Show Report</button>
+      <button class="btn btn-green" id="highlightExcellent">🌟 Highlight Excellent Students</button>
+      <button class="btn btn-orange" id="resetColors">♻️ Reset Colors</button>
+    </div>
 
-<!-- Section pour afficher le rapport -->
-<div id="reportSection" style="display:none;">
-  <h3>Attendance Report</h3>
-  <p id="reportText"></p>
-  <canvas id="reportChart" width="400" height="200"></canvas>
+    <div id="reportSection">
+      <h3>Class Report</h3>
+      <p id="reportText"></p>
+      <canvas id="reportChart" width="400" height="200"></canvas>
+    </div>
+  </div>
 </div>
 
 <script>
 const table = document.getElementById("attendanceTable");
+
+// 🔹 Met à jour chaque ligne du tableau
 function updateRow(row) {
   const cells = row.querySelectorAll("td");
-  let absences = 0;
-  let participations = 0;
-
-  for (let i = 2; i < 14; i += 2) {
+  let absences = 0, participations = 0;
+  for (let i = 2; i < 14; i += 2)
     if (cells[i].textContent.trim() === "") absences++;
-  }
-  for (let i = 3; i < 14; i += 2) {
+  for (let i = 3; i < 14; i += 2)
     if (cells[i].textContent.trim() === "✓") participations++;
-  }
-
   cells[14].textContent = absences + " Abs";
   cells[15].textContent = participations + " Par";
 
@@ -277,7 +309,7 @@ function updateRow(row) {
   cells[16].textContent = msg;
 }
 
-// rendre les cases cliquables
+// ✅ Cases cliquables
 table.querySelectorAll("td.clickable").forEach(cell => {
   cell.addEventListener("click", () => {
     cell.textContent = cell.textContent === "✓" ? "" : "✓";
@@ -286,89 +318,60 @@ table.querySelectorAll("td.clickable").forEach(cell => {
 });
 table.querySelectorAll("tbody tr").forEach(row => updateRow(row));
 
-// formulaire
+// ✅ Formulaire
 document.getElementById("studentForm").addEventListener("submit", function(e) {
   e.preventDefault();
+  const id = studentId.value.trim(), last = lastName.value.trim(), first = firstName.value.trim(), email = document.getElementById("email").value.trim();
+  idError.textContent = lastError.textContent = firstError.textContent = emailError.textContent = "";
   let valid = true;
-  const id = document.getElementById("studentId").value.trim();
-  const last = document.getElementById("lastName").value.trim();
-  const first = document.getElementById("firstName").value.trim();
-  const email = document.getElementById("email").value.trim();
+  if (!/^[0-9]+$/.test(id)) { idError.textContent = "ID must contain only numbers."; valid = false; }
+  if (!/^[a-zA-Z]+$/.test(last)) { lastError.textContent = "Last name must contain only letters."; valid = false; }
+  if (!/^[a-zA-Z]+$/.test(first)) { firstError.textContent = "First name must contain only letters."; valid = false; }
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { emailError.textContent = "Enter a valid email."; valid = false; }
+  if (!valid) return;
 
-  document.getElementById("idError").textContent = "";
-  document.getElementById("lastError").textContent = "";
-  document.getElementById("firstError").textContent = "";
-  document.getElementById("emailError").textContent = "";
-
-  if (id === "" || !/^[0-9]+$/.test(id)) {
-    document.getElementById("idError").textContent = "ID must contain only numbers.";
-    valid = false;
-  }
-  if (!/^[a-zA-Z]+$/.test(last)) {
-    document.getElementById("lastError").textContent = "Last name must contain only letters.";
-    valid = false;
-  }
-  if (!/^[a-zA-Z]+$/.test(first)) {
-    document.getElementById("firstError").textContent = "First name must contain only letters.";
-    valid = false;
-  }
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-    document.getElementById("emailError").textContent = "Enter a valid email (ex: name@example.com).";
-    valid = false;
-  }
-
-  if (valid) {
-    const tableBody = document.querySelector("#attendanceTable tbody");
-    const newRow = document.createElement("tr");
-    newRow.innerHTML = `
-      <td>${last}</td>
-      <td>${first}</td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td class="clickable"></td><td class="clickable"></td>
-      <td></td><td></td><td></td>
-    `;
-    tableBody.appendChild(newRow);
-    newRow.querySelectorAll("td.clickable").forEach(cell => {
-      cell.addEventListener("click", () => {
-        cell.textContent = cell.textContent === "✓" ? "" : "✓";
-        updateRow(cell.parentElement);
-      });
-    });
-    updateRow(newRow);
-    alert("Student added successfully!");
-    this.reset();
-  }
+  const tableBody = document.querySelector("#attendanceTable tbody");
+  const newRow = document.createElement("tr");
+  newRow.innerHTML = `<td>${last}</td><td>${first}</td>` +
+    "<td class='clickable'></td><td class='clickable'></td>".repeat(6) +
+    "<td></td><td></td><td></td>";
+  tableBody.appendChild(newRow);
+  newRow.querySelectorAll("td.clickable").forEach(c => c.addEventListener("click", () => {
+    c.textContent = c.textContent === "✓" ? "" : "✓";
+    updateRow(c.parentElement);
+  }));
+  updateRow(newRow);
+  alert("✅ Student added successfully!");
+  this.reset();
 });
 
-let reportChart = null; 
+// ✅ Rapport (Exercice 4)
+let reportChart = null;
 
 document.getElementById("showReport").addEventListener("click", () => {
   const rows = document.querySelectorAll("#attendanceTable tbody tr");
   const totalStudents = rows.length;
-  let totalPresents = 0;
-  let totalParticipants = 0;
+  let totalPresents = 0, totalParticipants = 0;
 
-  rows.forEach(row =>  {
-    const cells = row.querySelectorAll("td");
+  rows.forEach(row => {
+    const c = row.querySelectorAll("td");
     for (let i = 2; i < 14; i += 2) {
-      if (cells[i].textContent.trim() === "✓") totalPresents++;
+      if (c[i].textContent.trim() === "✓") totalPresents++;
     }
     for (let i = 3; i < 14; i += 2) {
-      if (cells[i].textContent.trim() === "✓") totalParticipants++;
+      if (c[i].textContent.trim() === "✓") totalParticipants++;
     }
   });
 
+  // ✅ afficher la section du rapport
   document.getElementById("reportSection").style.display = "block";
-  document.getElementById("reportText").innerHTML =  `
+  document.getElementById("reportText").innerHTML = `
     <strong>Total Students:</strong> ${totalStudents}<br>
     <strong>Total Presences:</strong> ${totalPresents}<br>
     <strong>Total Participations:</strong> ${totalParticipants}
   `;
 
+  // ✅ création du graphique
   const ctx = document.getElementById("reportChart").getContext("2d");
   if (reportChart) reportChart.destroy();
 
@@ -383,43 +386,92 @@ document.getElementById("showReport").addEventListener("click", () => {
       }]
     },
     options: {
-      scales: { y: { beginAtZero: true } }
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { stepSize: 1 }
+        }
+      }
     }
   });
 });
 
+// ✅ jQuery – Exo 5 & 6
 $(document).ready(function() {
-  $("#attendanceTable tbody tr").hover(
-    function() { $(this).addClass("highlight"); },
-    function() { $(this).removeClass("highlight"); }
-  );
 
+  // survol — highlight léger
+  $("#attendanceTable tbody").on("mouseenter", "tr", function() {
+    $(this).addClass("highlight");
+  });
+  $("#attendanceTable tbody").on("mouseleave", "tr", function() {
+    $(this).removeClass("highlight");
+  });
+
+  // clic sur une ligne => afficher infos détaillées
   $("#attendanceTable tbody").on("click", "tr", function() {
     const last = $(this).find("td:eq(0)").text();
     const first = $(this).find("td:eq(1)").text();
     const absText = $(this).find("td:eq(14)").text();
-    const partTEXT = $(this).find("td:eq(15)").text();
-    alert(`Student: ${first} ${last}\n${absText }\n${partTEXT}`);
+    const partText = $(this).find("td:eq(15)").text();
+    const abs = absText.match(/\d+/)?.[0] || 0;
+    const part = partText.match(/\d+/)?.[0] || 0;
+    alert(`👤 Étudiant : ${first} ${last}\n📉 Absences : ${abs}\n💬 Participations : ${part}`);
+  });
 
+  // Highlight Excellent Students
   $("#highlightExcellent").on("click", function() {
+    // 1) nettoyer d'abord les anciens styles / classes
+    $("#attendanceTable tbody tr").each(function() {
+      $(this).removeClass("excellent").removeAttr("style");
+    });
+
+    let count = 0;
+
+    // 2) s'assurer que chaque ligne est recalculée (au cas où)
+    $("#attendanceTable tbody tr").each(function() {
+      // updateRow accepte un élément DOM
+      updateRow(this);
+    });
+
+    // 3) parcourir et appliquer la mise en valeur aux "excellents"
     $("#attendanceTable tbody tr").each(function() {
       const absText = $(this).find("td:eq(14)").text();
-      const absences = absText.match(/\d+/) ? parseInt(absText.match(/\d+/)[0]) : 0;
-      if (absences < 3) {
+      const partText = $(this).find("td:eq(15)").text();
+      const abs = absText.match(/\d+/) ? parseInt(absText.match(/\d+/)[0]) : 0;
+      const part = partText.match(/\d+/) ? parseInt(partText.match(/\d+/)[0]) : 0;
+
+      // Critère : moins de 3 absences (0-2) ET au moins 3 participations
+      if (abs <= 2 && part >= 3) {
+        // applique une surbrillance visible et temporaire
         $(this).addClass("excellent");
+        $(this).css({
+          "background-color": "#9ff0a0",
+          "font-weight": "700",
+          "color": "#034003",
+          "transition": "background 0.35s ease"
+        });
+        count++;
       }
+    });
+
+    alert(`🌟 ${count} excellent student(s) highlighted!`);
+  });
+
+  // Reset Colors : supprime les classes et styles inline, puis recalcul
+  $("#resetColors").on("click", function() {
+    $("#attendanceTable tbody tr").each(function() {
+      $(this).removeClass("excellent green yellow red highlight");
+      $(this).removeAttr("style");
+      // recalcul pour réappliquer classes green/yellow/red selon absences
+      updateRow(this);
     });
   });
 
-  // 🔄 Bouton pour réinitialiser les couleurs
-  $("#resetColors").on("click", function() {
-    $("#attendanceTable tbody tr").removeClass("excellent");
-  });
 });
-  });
+
 
 </script>
 
 </body>
 </html>
-
